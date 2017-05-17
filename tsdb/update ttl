@@ -1,0 +1,11 @@
+
+        Configuration config = HBaseConfiguration.create();
+        config.set("hbase.zookeeper.quorum", HBASE_ZK);
+        config.set("zookeeper.znode.parent", HBASE_ZNODE_PARENT);
+        int ttl = Integer.parseInt(value);
+        Connection connection = ConnectionFactory.createConnection(config);
+        HBaseAdmin hBaseAdmin = (HBaseAdmin)connection.getAdmin();
+        HTableDescriptor hTableDescriptor = hBaseAdmin.getTableDescriptor(tsdb.dataTable());
+        HColumnDescriptor hColumnDescriptor = hTableDescriptor.getFamily("t".getBytes());
+        hColumnDescriptor.setTimeToLive(ttl);
+        hBaseAdmin.modifyTable(tsdb.dataTable(), hTableDescriptor);
